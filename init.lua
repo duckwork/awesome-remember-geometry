@@ -42,6 +42,12 @@ if c.floating then
 end
 end)
 
+client.connect_signal("property::floating", function(c)
+if c.floating then
+	c:geometry(c.remember_geometry.floating_geometry)
+end
+end)
+
 tag.connect_signal("property::layout", function(t)
 if t.layout == awful.layout.suit.floating then
 	for k, c in ipairs(t:clients()) do
