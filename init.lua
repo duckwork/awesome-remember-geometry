@@ -18,21 +18,26 @@ client.connect_signal("maximize", function(c)
 	c.maximized_vertical = max
 end)
 
-client.connect_signal("manage", function(c)
-c.remember_geometry = {
-	floating_geometry=c:geometry(),
-	maximized_manual=false,
-	maximized_horizontal=c.maximized_horizontal,
-	maximized_vertical=c.maximized_vertical
-}
-end)
+local function set_geometry (c)
+    c.remember_geometry = {
+        floating_geometry=c:geometry(),
+        maximized_manual=false,
+        maximized_horizontal=c.maximized_horizontal,
+        maximized_vertical=c.maximized_vertical
+    }
+end
+
+client.connect_signal("manage", function (c) set_geometry(c) end)
 
 client.connect_signal("unmanage", function(c)
-c.remember_geometry = nil
+    c.remember_geometry = nil
 end)
 
 client.connect_signal("property::floating", function(c)
 if c.floating then
+    if not c.remember_geometry then
+        set_geometry(c)
+    end
 	c:geometry(c.remember_geometry.floating_geometry)
 end
 end)
